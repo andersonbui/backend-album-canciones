@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 //cargar rutas
-var rutas_usuario = require('./rutas/user').default;
+var rutas_usuario = require('./rutas/usuario');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
