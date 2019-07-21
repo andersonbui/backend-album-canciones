@@ -5,6 +5,8 @@
 var bcrypt = require('bcrypt-nodejs');
 var Usuario = require('../modelos/usuario');
 var jwt = require('../servicios/jwt');
+var fs = require('fs');
+var path = require('path');
 
 function api(req, res){
     res.status(200).send({
@@ -107,17 +109,17 @@ function actualizar(req, res) {
 function subirImagen(req, res) {
     var idUsuario = req.params.id;
     var nombreArchivo = 'no subido ...';
-    if (req.files){
-        var rutaArchivo = req.files.image.path;
+    if (req.files && req.files.imagen){
+        var rutaArchivo = req.files.imagen.path;
         let file_spli = rutaArchivo.split('/');
         if(file_spli.length == 1){
-            file_spli = file_spli[0].split('\\')[2];
+            nombreArchivo = file_spli[0].split('\\')[2];
         } else {
-            file_spli = file_spli[2];
+            nombreArchivo = file_spli[2];
         }
         let extension = rutaArchivo.split('\.')[1];
         if(extension == 'png' || extension == 'jpg' || extension == 'gif') {
-            Usuario.findOneAndUpdate(idUsuario, {imagen: file_spli}, (err, usuarioActualizado) => {
+            Usuario.findOneAndUpdate({_id : idUsuario}, {imagen: nombreArchivo}, (err, usuarioActualizado) => {
                 if(err) {
                     res.status(404).send({message: 'No se pudo actualizar la imagen'});
                 } else {
@@ -127,11 +129,23 @@ function subirImagen(req, res) {
         } else {
             res.status(200).send({message: 'Extension del archivo no valida'});
         }
-        console.log(file_spli);
+        console.log(nombreArchivo);
         console.log(extension);
     } else {
         res.status(200).send({message: 'No has subido ninguna imagen'});
     }
+}
+
+function obtenerImagen(req, res) {
+    let archivo_imagen = req.params.archivoImagen;
+    let imagen = './subidas/usuarios/'+archivo_imagen;
+    fs.exists(imagen, (exist) => {
+        if(exist){
+            res.status(200).sendFile(path.resolve(imagen));
+        } else {
+            res.status(200).send({message: 'fichero no existe'});
+        }
+    });
 }
 
 module.exports = {
@@ -139,5 +153,6 @@ module.exports = {
     guardar,
     login,
     actualizar,
-    subirImagen
+    subirImagen,
+    obtenerImagen
 };

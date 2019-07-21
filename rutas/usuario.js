@@ -14,6 +14,7 @@ api.put('/usuarios/actualizar/:_id', md_aut.asegurarAut, UserController.actualiz
 api.get('/usuarios', UserController.api);
 api.post('/usuarios/registrar',UserController.guardar);
 api.post('/usuarios/subir-imagen/:id', [md_aut.asegurarAut, md_subidas] ,UserController.subirImagen);
+api.get('/usuarios/obtener-imagen/:archivoImagen', UserController.obtenerImagen);
 
 
 module.exports = api;

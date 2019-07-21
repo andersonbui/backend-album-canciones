@@ -1,12 +1,12 @@
-'use strict'
+'use strict';
 
 var mongoose = require('mongoose');
-var Schema = mogngoose.Schema;
+var Schema = mongoose.Schema;
 
 var AlbumSchema = Schema({
     titulo: String,
     descripcion: String,
-    ano: Number,
+    anio: Number,
     imagen: String,
     artista: { type: Schema.ObjectId, ref: 'Artista'}
 });

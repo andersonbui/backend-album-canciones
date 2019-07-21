@@ -1,13 +1,13 @@
-'use strict'
+'use strict';
 
 var mongoose = require('mongoose');
-var Schema = mogngoose.Schema;
+var Schema = mongoose.Schema;
 
 var CancionSchema = Schema({
     numero: Number,
     nombre: String,
     duracion: String,
-    file: String,
+    archivo: String,
     album: {type: Schema.ObjectId, ref: 'Album'}
 });
 
