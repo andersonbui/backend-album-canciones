@@ -8,12 +8,6 @@ var jwt = require('../servicios/jwt');
 var fs = require('fs');
 var path = require('path');
 
-function api(req, res){
-    res.status(200).send({
-        message: "probando api"
-    });
-}
-
 function guardar(req, res){
     var usuario = new Usuario();
 
@@ -149,7 +143,6 @@ function obtenerImagen(req, res) {
 }
 
 module.exports = {
-    api,
     guardar,
     login,
     actualizar,

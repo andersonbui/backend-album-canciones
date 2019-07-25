@@ -9,10 +9,9 @@ var api = express.Router();
 var multipart = require('connect-multiparty');
 var md_subidas = multipart({uploadDir: './subidas/usuarios'});
 
-api.post('/login', md_aut.asegurarAut, UserController.login);
-api.put('/usuarios/actualizar/:_id', md_aut.asegurarAut, UserController.actualizar);
-api.get('/usuarios', UserController.api);
+api.post('/login', UserController.login);
 api.post('/usuarios/registrar',UserController.guardar);
+api.put('/usuarios/actualizar/:_id', md_aut.asegurarAut, UserController.actualizar);
 api.post('/usuarios/subir-imagen/:id', [md_aut.asegurarAut, md_subidas] ,UserController.subirImagen);
 api.get('/usuarios/obtener-imagen/:archivoImagen', UserController.obtenerImagen);
 
