@@ -10,7 +10,7 @@ exports.crearTokent = function(usuario){
     var payload = {
         sub: usuario._id,
         nombre: usuario.nombre,
-        apelido: usuario.apellido,
+        apellido: usuario.apellido,
         email: usuario.email,
         rol: usuario.rol,
         imagen: usuario.imagen,

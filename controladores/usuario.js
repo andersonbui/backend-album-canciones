@@ -21,7 +21,7 @@ function guardar(req, res){
     usuario.rol = 'ROL_ADMINs';
     usuario.imagen = 'null';
 
-    if(parametros.token === 'admin'){
+    // if(parametros.token === 'admin'){
         // encriptar contrasena y guardar datos
         bcrypt.hash(parametros.clave,null,null, function(err, hash){
             usuario.clave = hash;
@@ -34,7 +34,7 @@ function guardar(req, res){
                         if(!usuarioGuardado){
                             res.status(500).send({message: "no se ha guardado el usuario"});
                         }else{
-                            res.status(200).send({message: "usuario guardado"});
+                            res.status(200).send({usuario: usuarioGuardado});
                             console.log(usuarioGuardado);
                         }
                     }
@@ -43,9 +43,9 @@ function guardar(req, res){
                 res.status(200).send({message: 'todos los campos son obligatorios'});
             }
         });
-    }else{
-        res.status(500).send({message: "introduce la contrasena"})
-    }
+    // }else{
+    //     res.status(500).send({message: "introduce la contrasena"})
+    // }
 }
 
 function login (req, res){
@@ -67,6 +67,7 @@ function login (req, res){
                         if(parametros.gethash){
                             // devolver token de jwt
                             res.status(200).send({
+                                usuario: usuario,
                                 token: jwt.crearTokent(usuario)
                             });
                         }else{
@@ -83,21 +84,51 @@ function login (req, res){
 
 function actualizar(req, res) {
     let idUsuario = req.params.id;
-    let datos_usuario = req.body;
-
-    Usuario.findOneAndUpdate(idUsuario, datos_usuario, (err, usuarioActualizado) => {
-        if(err){
-            res.status(500).send({ message: 'Error al actualizar el usuario'});
-        } else {
-            if(!usuarioActualizado) {
-                res.status(404).send({message: 'El usuario no a podido ser actualizado'});
+    let un_usuario = req.body; 
+    
+    // seguridad - verificar que el usuario logueado es el mismo que el que se actualiza
+    if (req.user.sub != idUsuario) {
+        return res.status(500).send({ message: `Error al actualizar el usuario. 
+        No hay autorizacion para actualizar este usuario
+        ${req.user.sub} != ${idUsuario}
+        `});
+    }
+    
+    let usuario = {"nombre": un_usuario.nombre, "apellido" : un_usuario.apellido, "email":un_usuario.email };
+    if(un_usuario.clave!= null){
+        usuario.clave = un_usuario.clave;
+    }
+    
+    if (usuario.clave != null){
+        bcrypt.hash(usuario.clave,null,null, function(err, hash){
+            usuario.clave = hash;
+            // guardar datos
+            Usuario.findOneAndUpdate({_id : idUsuario}, usuario, (err, usuarioActualizado) => {
+                if(err){
+                    res.status(500).send({ message: 'Error al actualizar el usuario. '+err});
+                } else {
+                    if(!usuarioActualizado) {
+                        res.status(404).send({message: 'El usuario no a podido ser actualizado'});
+                    } else {
+                        res.status(200).send({usuario: usuarioActualizado});
+                    }
+                }
+            });
+        });
+    } else {
+        // guardar datos
+        Usuario.findOneAndUpdate({_id : idUsuario}, usuario, (err, usuarioActualizado) => {
+            if(err){
+                res.status(500).send({ message: 'Error al actualizar el usuario. '+err});
             } else {
-                res.status(200).send({usuario: usuarioActualizado});
+                if(!usuarioActualizado) {
+                    res.status(404).send({message: 'El usuario no a podido ser actualizado'});
+                } else {
+                    res.status(200).send({usuario: usuarioActualizado});
+                }
             }
-        }
-
-    });
-
+        });
+    }
 }
 
 function subirImagen(req, res) {
