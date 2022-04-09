@@ -23,7 +23,7 @@
     "express": "^4.17.1",
     "jshint": "^2.10.2",
     "jwt-simple": "^0.5.6",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.7.5",
     "mongoose-pagination": "^1.0.0",
     "tunnel-ssh": "^4.1.4"
